@@ -6,6 +6,7 @@ use App\Model\product;
 use Illuminate\Http\Request;
 use App\Http\Resources\product\productResource;
 use App\Http\Resources\product\productCollection;
+use App\Http\Resources\reviewResources;
 
 
 class ProductController extends Controller
@@ -17,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return productCollection::collection(product::all());
+        return productCollection::collection(product::paginate(20));
     }
 
     /**
