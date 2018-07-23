@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Resources\product\productResource;
 use App\Http\Resources\product\productCollection;
 use App\Http\Resources\reviewResources;
+use App\Http\Requests\productRequest;
 
 
 class ProductController extends Controller
 {
+    public function __construct ()
+    {
+        $this->middleware('auth:api')->except('index','show');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -37,9 +42,18 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(productRequest $request)
     {
-        //
+        $product = new product;
+        $product->name = $request->name;
+        $product->detail= $request->description;
+        $product->stock= $request->stock;
+        $product->price= $request->price;
+        $product->discount= $request->discount;
+        $product->save();
+       return Response([
+        'date' => new productResource($product)
+       ]);  
     }
 
     /**
@@ -73,7 +87,9 @@ class ProductController extends Controller
      */
     public function update(Request $request, product $product)
     {
-        //
+        $request['detail']= $request->description;
+        unset($request->description);
+        $product->update($request->all());
     }
 
     /**
