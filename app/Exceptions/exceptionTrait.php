@@ -18,6 +18,9 @@ public function apiException($request,$e)
              return response ([
                 'errors'=>'incorrect route'],Response::HTTP_NOT_FOUND
              );
+
          }
+                 return parent::render($request, $e);
+
 }
 }

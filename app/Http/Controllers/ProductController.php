@@ -8,6 +8,8 @@ use App\Http\Resources\product\productResource;
 use App\Http\Resources\product\productCollection;
 use App\Http\Resources\reviewResources;
 use App\Http\Requests\productRequest;
+use App\Exceptions\ProductNotBelongToUser;
+use Auth;
 
 
 class ProductController extends Controller
@@ -87,6 +89,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, product $product)
     {
+        $this->check($product);
         $request['detail']= $request->description;
         unset($request->description);
         $product->update($request->all());
@@ -100,6 +103,15 @@ class ProductController extends Controller
      */
     public function destroy(product $product)
     {
+        $this->check($product);
+
         $product->delete();
+    }
+    public function check($product)
+    {
+        if (Auth::id()!==$product->user_id) {
+            throw new ProductNotBelongToUser;
+            
+        }
     }
 }
